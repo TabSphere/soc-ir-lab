@@ -1,0 +1,26 @@
+<Sysmon schemaversion="4.50">
+  <HashAlgorithms>md5,sha256</HashAlgorithms>
+  <EventFiltering>
+    <!-- Process creation -->
+    <ProcessCreate onmatch="include">
+      <CommandLine condition="contains">-enc</CommandLine>
+      <CommandLine condition="contains">-nop</CommandLine>
+    </ProcessCreate>
+
+    <!-- Network connections -->
+    <NetworkConnect onmatch="include">
+      <Image condition="is">C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</Image>
+      <Image condition="end with">nmap.exe</Image>
+    </NetworkConnect>
+
+    <!-- File creation events -->
+    <FileCreateTime onmatch="exclude">
+      <UtcTime condition="is"></UtcTime>
+    </FileCreateTime>
+
+    <!-- Registry changes (persistence) -->
+    <RegistryEvent onmatch="include">
+      <TargetObject condition="contains">\Run</TargetObject>
+    </RegistryEvent>
+  </EventFiltering>
+</Sysmon>
